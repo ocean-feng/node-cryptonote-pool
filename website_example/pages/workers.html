@@ -1,0 +1,65 @@
+<div class="form-group">
+    <form id="look-up">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Address" data-role="address" required="required">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">LookUp</button>
+            </span>
+        </div>
+    </form>
+</div>
+<div class="paymentsStatHolder">
+    <span class="label label-primary">Total Workers: <span id="workersTotal">0</span></span>
+</div>
+<div class="table-responsive">
+    <table class="table table-hover table-striped">
+        <thead>
+        <tr>
+            <th> Worker Id</th>
+            <th> Hash Rate</th>
+            <th><i class="fa fa-clock-o"></i> Last Share Time</th>
+        </tr>
+        </thead>
+        <tbody id="workers">
+        </tbody>
+    </table>
+</div>
+
+<script>
+
+    currentPage = {
+        destroy: function(){
+
+        },
+        update: function(){
+        }
+    };
+
+    var xhrForWorkers;
+
+    function renderWorkers(workers)
+    {
+        var html = '';
+        var total = 0;
+        $.each(workers, function(key, worker){
+            var shareDate = new Date();
+            shareDate.setTime(worker.lastsharetime * 1000);
+            html += '<tr><td>'+key+'</td><td>'+worker.hashrate+'</td><td>'+shareDate.toLocaleString()+'</td></tr>';
+            total ++;
+        });
+        $('#workers').html(html);
+        updateText('workersTotal', total);
+    }
+
+    $('#look-up').on('submit', function(){
+        if (xhrForWorkers) {
+            xhrForWorkers.abort();
+        }
+        xhrForWorkers = $.get(api + '/get_worker', {'address': $.trim($('[data-role="address"]').val())}, function(response){
+            console.log(response);
+            renderWorkers(response.worker);
+        }, 'json');
+        return false;
+    });
+
+</script>

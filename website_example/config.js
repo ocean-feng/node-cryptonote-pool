@@ -1,4 +1,4 @@
-var api = "http://cryppit.com:8117";
+var api = "http://192.168.1.64:8117";
 
 var coinUnits = 1000000000000;
 
